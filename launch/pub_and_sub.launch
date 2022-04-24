@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="rosproject1" type="sub" name="my_subscriber" output="screen" />
+</launch>
