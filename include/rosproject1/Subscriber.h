@@ -9,6 +9,12 @@ public:
   Subscriber(); 
   void main_loop();
   void velCallback(const sensor_msgs::JointState::ConstPtr& msg);
+  static constexpr float radius = 0.07; //radius of wheels
+  static constexpr int N = 42; //encoder CPR
+  static constexpr double T = 5; //gear ratio
+  static constexpr double l = 0.2; //wheel position along x (+-l)
+  static constexpr double w = 0.169; //wheel position along y (+-w)
+  static constexpr double multFactor = (1/(N*T)) * 2 * M_PI; 
 
 private:
   //member variables, visible only IN the class
@@ -18,5 +24,6 @@ private:
   geometry_msgs::Vector3 linear;
   geometry_msgs::Vector3 angular;
   ros::Time prev_stamp;
-  int count;
+  std::vector<double> prev_position;
+  //int count;
 };
