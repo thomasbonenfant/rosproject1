@@ -4,13 +4,14 @@
 #include <sstream>
 
 #include "rosproject1/VelSubscriber.h"
+#include "rosproject1/WheelsSpeeds.h"
 
 //constructor of the classs, initializations
 VelSubscriber::VelSubscriber() {
 
   //this specifies also in which class the callback is defined
   this->sub = this->n.subscribe("cmd_vel", 1000, &VelSubscriber::wheelsCallback, this);
-  this->wheels_pub = this->n.advertise<geometry_msgs::TwistStamped>("wheels_rpm", 1000);
+  this->wheels_pub = this->n.advertise<rosproject1::WheelsSpeeds>("wheels_rpm", 1000);
 }
 
 void VelSubscriber::main_loop() {
@@ -26,6 +27,9 @@ void VelSubscriber::main_loop() {
 
 void VelSubscriber::wheelsCallback(const geometry_msgs::TwistStamped::ConstPtr& msg) {
 
+	//create a new message of type WheelsSpeeds to be filled
+	rosproject1::WheelsSpeeds speeds_msg;
+	
   //to be implemented
   
 }
