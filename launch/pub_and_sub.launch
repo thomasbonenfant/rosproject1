@@ -1,3 +1,6 @@
+<!-- output="screen" to see the output of a node -->
+
 <launch>
-    <node pkg="rosproject1" type="sub" name="my_subscriber" output="screen" />
+    <node pkg="rosproject1" type="sub" name="wheels_sub"/>
+    <node pkg="rosproject1" type="sub" name="vel_sub"/>
 </launch>

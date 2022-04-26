@@ -120,7 +120,7 @@ catkin_package(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
-add_library(subscriber_class src/Subscriber.cpp)
+add_library(subscriber_class src/WheelsSubscriber.cpp)
 
 
 
@@ -133,7 +133,7 @@ add_dependencies(subscriber_class ${catkin_EXPORTED_TARGETS})
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 ##add_executable(pub src/pub.cpp)
-add_executable(sub src/main_sub.cpp)
+add_executable(sub src/wheels_sub.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

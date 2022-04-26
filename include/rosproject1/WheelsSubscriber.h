@@ -1,12 +1,12 @@
-#define SUBSCRIBER_H
+#define WHEELSSUBSCRIBER_H
 
 #include "ros/ros.h"
 #include "sensor_msgs/JointState.h"
 #include "geometry_msgs/Vector3.h"
 
-class Subscriber {
+class WheelsSubscriber {
 public:
-  Subscriber(); 
+  WheelsSubscriber(); 
   void main_loop();
   void velCallback(const sensor_msgs::JointState::ConstPtr& msg);
   static constexpr float radius = 0.07; //radius of wheels
@@ -25,5 +25,4 @@ private:
   geometry_msgs::Vector3 angular;
   ros::Time prev_stamp;
   std::vector<double> prev_position;
-  //int count;
 };

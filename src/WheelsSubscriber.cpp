@@ -6,51 +6,29 @@
 #include "geometry_msgs/Vector3.h"
 #include <sstream>
 
-#include "rosproject1/Subscriber.h"
-
+#include "rosproject1/WheelsSubscriber.h"
 
 //constructor of the classs, initializations
-Subscriber::Subscriber() {
+WheelsSubscriber::WheelsSubscriber() {
 
   //this specifies also in which class the callback is defined
-  this->sub = this->n.subscribe("wheel_states", 1000, &Subscriber::velCallback, this);
+  this->sub = this->n.subscribe("wheel_states", 1000, &WheelsSubscriber::velCallback, this);
   this->vel_pub = this->n.advertise<geometry_msgs::TwistStamped>("cmd_vel", 1000);
-  /*
-  const float radius = 0.07; //radius of wheels
-  const int N = 42; //encoder CPR
-  const double T = 5; //gear ratio
-  const double l = 0.2; //wheel position along x (+-l)
-  const double w = 0.169; //wheel position along y (+-w)
-  const double multFactor = (1/(N*T)) * 2 * M_PI; */
 }
 
-void Subscriber::main_loop() {
+void WheelsSubscriber::main_loop() {
 	ros::Rate loop_rate(10);
-	// instead of std_msgs I have to publish v and omega as topic cmd_vel
-	// of type geometry_msgs/TwistStamped
-
-	//setting sample values
-
-	this->linear.x = 1.0;
-  this->linear.y = 1.0;
-  this->linear.z = 0.0;
-	this->angular.x = 0.0;
-  this->angular.y = 0.0;
-  this->angular.z = 1.0;
 
   this->prev_stamp = ros::Time(0);
-
-	//this->count = 0;
 
 	while (ros::ok()) {
 
 	ros::spinOnce();
 	loop_rate.sleep();
-	//++count;
 	}
 }
 
-void Subscriber::velCallback(const sensor_msgs::JointState::ConstPtr& msg) {
+void WheelsSubscriber::velCallback(const sensor_msgs::JointState::ConstPtr& msg) {
 
   //code to print received message infos
   std::string name;
@@ -119,7 +97,7 @@ void Subscriber::velCallback(const sensor_msgs::JointState::ConstPtr& msg) {
     
     // finding wheels velocity multiplying deltaTicks with multFactor
     wheelsVel = deltaTicks;
-    double mult = Subscriber::multFactor;
+    double mult = WheelsSubscriber::multFactor;
     transform(wheelsVel.begin(), wheelsVel.end(), wheelsVel.begin(), 
       [mult](double &c){ return c*mult;});
 
@@ -130,21 +108,22 @@ void Subscriber::velCallback(const sensor_msgs::JointState::ConstPtr& msg) {
     // computing linear and angular speeds from given system info and wheels velocities
     
     this->angular.z = (wheelsVel.at(1) - wheelsVel.at(2) + wheelsVel.at(3) - wheelsVel.at(0))*
-    Subscriber::radius/(4*(Subscriber::l + Subscriber::w));
-    this->linear.x = (wheelsVel.at(0) + wheelsVel.at(1) + wheelsVel.at(2) + wheelsVel.at(3))*Subscriber::radius/4;
-    this->linear.y = (wheelsVel.at(1) + wheelsVel.at(2) - wheelsVel.at(3)- wheelsVel.at(0))*Subscriber::radius/4;
+    WheelsSubscriber::radius/(4*(WheelsSubscriber::l + WheelsSubscriber::w));
+    this->linear.x = (wheelsVel.at(0) + wheelsVel.at(1) + wheelsVel.at(2) + wheelsVel.at(3))*WheelsSubscriber::radius/4;
+    this->linear.y = (wheelsVel.at(1) + wheelsVel.at(2) - wheelsVel.at(3)- wheelsVel.at(0))*WheelsSubscriber::radius/4;
     
     //set values
     vel_msg.twist.linear = this->linear;
     vel_msg.twist.angular = this->angular;
+    
     //set the header
     vel_msg.header.seq = msg->header.seq;
+    
     vel_msg.header.frame_id = msg->header.frame_id;
     //when we reach a timestamp in the msg, we should use it
     //also for the published msg as it refers also to that time
     vel_msg.header.stamp = msg->header.stamp;
 
-    
     
     ss << "The computed linear velocity is: " << vel_msg.twist.linear.x << " along x axis," << std::endl;
     ss << vel_msg.twist.linear.y << " along y axis," << std::endl;
