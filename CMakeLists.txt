@@ -106,7 +106,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES subscriber_class
+  LIBRARIES wheels_subscriber_class
+  LIBRARIES vel_subscriber_class
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
@@ -120,20 +121,21 @@ catkin_package(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
-add_library(subscriber_class src/WheelsSubscriber.cpp)
-
-
+add_library(wheels_subscriber_class src/WheelsSubscriber.cpp)
+add_library(vel_subscriber_class src/VelSubscriber.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-add_dependencies(subscriber_class ${catkin_EXPORTED_TARGETS})
+add_dependencies(wheels_subscriber_class ${catkin_EXPORTED_TARGETS})
+add_dependencies(vel_subscriber_class ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 ##add_executable(pub src/pub.cpp)
-add_executable(sub src/wheels_sub.cpp)
+add_executable(wheels_sub src/wheels_sub.cpp)
+add_executable(vel_sub src/vel_sub.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -143,11 +145,14 @@ add_executable(sub src/wheels_sub.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(sub ${catkin_EXPORTED_TARGETS})
+add_dependencies(wheels_sub ${catkin_EXPORTED_TARGETS})
+add_dependencies(vel_sub ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(sub ${catkin_LIBRARIES} subscriber_class)
-target_link_libraries(subscriber_class ${catkin_LIBRARIES})
+target_link_libraries(wheels_sub ${catkin_LIBRARIES} wheels_subscriber_class)
+target_link_libraries(wheels_subscriber_class ${catkin_LIBRARIES})
+target_link_libraries(vel_sub ${catkin_LIBRARIES} vel_subscriber_class)
+target_link_libraries(vel_subscriber_class ${catkin_LIBRARIES})
 #target_link_libraries(pub ${catkin_LIBRARIES})
 
 #############
