@@ -64,24 +64,13 @@ public:
     ss << "Current seq: " << msg->header.seq << std::endl;
 
     // computation of deltaTime in nsec
-    if (this->prev_stamp.sec == msg->header.stamp.sec) {
-      deltaTime = msg->header.stamp.nsec - this->prev_stamp.nsec;
-    }
-    else
-      deltaTime = (1000000000 - this->prev_stamp.nsec) + msg->header.stamp.nsec;
-    if (msg->header.stamp.sec - this->prev_stamp.sec > 1)
-      ROS_INFO("WARNING: difference of time is more than one second ");
-
-    ss << "Computed deltaTime in nsec: " << deltaTime << std::endl;
-
-    // conversion of deltaTime from nsec to sec
-    deltaTime = deltaTime/1000000000;
+    deltaTime = msg->header.stamp.sec - prev_stamp.sec + ((msg->header.stamp.nsec - prev_stamp.nsec) / 1e9);
 
     ss << "Computed deltaTime in sec: " << deltaTime << std::endl;
     
     // computation of deltaTicks
     std::transform((msg->position).begin(), (msg->position).end(), (this->prev_position).begin(), 
-      std::back_inserter(deltaTicks), [](double l, double r) { return fabs(l - r);});
+      std::back_inserter(deltaTicks), [](double l, double r) { return l - r;});
 
     ss << "Computed deltaTicks 1: " << deltaTicks.at(0) << std::endl;
     ss << "From new position: " << msg->position.at(0) << std::endl;

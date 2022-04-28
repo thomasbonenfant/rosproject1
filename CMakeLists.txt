@@ -129,6 +129,7 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 ##add_executable(pub src/pub.cpp)
 add_executable(wheels_sub src/wheels_sub.cpp)
 add_executable(vel_sub src/vel_sub.cpp)
+add_executable(odom_node src/odom_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -140,11 +141,15 @@ add_executable(vel_sub src/vel_sub.cpp)
 ## same as for the library above
 add_dependencies(wheels_sub ${catkin_EXPORTED_TARGETS})
 add_dependencies(vel_sub ${catkin_EXPORTED_TARGETS})
+add_dependencies(odom_node ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(wheels_sub ${catkin_LIBRARIES})
 #target_link_libraries(wheels_subscriber_class ${catkin_LIBRARIES})
 target_link_libraries(vel_sub ${catkin_LIBRARIES})
+target_link_libraries(odom_node ${catkin_LIBRARIES})
+
+
 
 #############
 ## Install ##
