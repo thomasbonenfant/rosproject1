@@ -38,8 +38,12 @@ void Odom::cmd_vel_sub_callback(const geometry_msgs::TwistStamped::ConstPtr& msg
     y += vy * deltatime;
     theta += vtheta * deltatime;
 
-    //publish odometry
     nav_msgs::Odometry odom;
+
+    odom.header.stamp = msg->header.stamp;
+    odom.child_frame_id = "base_link";
+    odom.header.frame_id = "odom";
+
     odom.pose.pose.position.x = x;
     odom.pose.pose.position.y = y;
     odom.pose.pose.position.z = 0;
@@ -52,7 +56,20 @@ void Odom::cmd_vel_sub_callback(const geometry_msgs::TwistStamped::ConstPtr& msg
     odom.pose.pose.orientation.y = orientation.y();
     odom.pose.pose.orientation.z = orientation.z();
 
+    transform_stamped.header.stamp = msg->header.stamp;
+    transform_stamped.header.frame_id = "odom";
+    transform_stamped.child_frame_id = "base_link";
+
+    transform_stamped.transform.translation.x = x;
+    transform_stamped.transform.translation.y = y;
+    transform_stamped.transform.translation.z = 0.0;
+    transform_stamped.transform.rotation.w = orientation.w();
+    transform_stamped.transform.rotation.x = orientation.x();
+    transform_stamped.transform.rotation.y = orientation.y();
+    transform_stamped.transform.rotation.z = orientation.z();
+
     odom_pub.publish(odom);
+    br.sendTransform(transform_stamped);
     
 
 }

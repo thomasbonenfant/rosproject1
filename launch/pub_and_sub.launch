@@ -4,5 +4,5 @@
     <node pkg="rosproject1" type="wheels_sub" name="wheels_sub" output="screen"/>
     <node pkg="rosproject1" type="vel_sub" name="vel_sub" output="screen"/>
     <node pkg="rosproject1" type="odom_node" name="odom_node" output="screen"/>
-
+    <!--<node pkg="rosproject1" type="pose_sub" name="gt_odom_tf"/>-->
 </launch>
