@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   tf2
   tf2_ros
+  dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -58,11 +59,10 @@ add_message_files(
 )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+   FILES
+   Reset.srv
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -92,10 +92,9 @@ generate_messages(
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+generate_dynamic_reconfigure_options(
+  cfg/parameters.cfg
+)
 
 ###################################
 ## catkin specific configuration ##

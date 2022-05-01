@@ -1,8 +1,14 @@
 <!-- output="screen" to see the output of a node -->
 
 <launch>
-    <node pkg="rosproject1" type="wheels_sub" name="wheels_sub" output="screen"/>
-    <node pkg="rosproject1" type="vel_sub" name="vel_sub" output="screen"/>
+    <node pkg="rosproject1" type="wheels_sub" name="wheels_sub"/>
+    <node pkg="rosproject1" type="vel_sub" name="vel_sub"/>
+
+    <param name="x" value="2"/>
+    <param name="y" value="2"/>
+    <param name="theta" value="2"/>
+
     <node pkg="rosproject1" type="odom_node" name="odom_node" output="screen"/>
-    <!--<node pkg="rosproject1" type="pose_sub" name="gt_odom_tf"/>-->
+    <node pkg="rosproject1" type="pose_sub" name="gt_odom_tf" output="screen"/>
+    <!--<node pkg="tf2_ros" type="static_transform_broadcaster" name="world_odom" args="0 0 0 0 0 0 1 world odom"/>-->
 </launch>
