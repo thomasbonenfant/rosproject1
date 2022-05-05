@@ -30,22 +30,12 @@ public:
 
   // this callback is gonna publish wheels velocities
 	void wheelsCallback(const geometry_msgs::TwistStamped::ConstPtr& msg) {
-		std::stringstream ss;
-		ss << "I heard timestamp sec: " << msg->header.stamp.sec << std::endl;
-	  ss << "and nanosec: " << msg->header.stamp.nsec << std::endl;
-	  
+		
 		//create a new message of type WheelsSpeeds to be filled
 		rosproject1::WheelsSpeeds speeds_msg;
 
-		//setting the header
-		//speeds_msg.header.seq = msg->header.seq;
-		ss << "I refer to seq: " << msg->header.seq << std::endl;
 		speeds_msg.header.stamp = msg->header.stamp;
 		speeds_msg.header.frame_id = msg->header.frame_id;
-
-		ss << "Received omegaz: " << msg->twist.angular.z << std::endl;
-	  ss << "Received vx: " << msg->twist.linear.x << std::endl;
-	  ss << "Received vy: " << msg->twist.linear.y << std::endl;
 
 		speeds_msg.rpm_fl = (((- VelSubscriber::l - VelSubscriber::w) * msg->twist.angular.z) + 
 		msg->twist.linear.x - msg->twist.linear.y) * VelSubscriber::multFactor;
@@ -55,12 +45,6 @@ public:
 		msg->twist.linear.x - msg->twist.linear.y) * VelSubscriber::multFactor;
 		speeds_msg.rpm_rr = (((- VelSubscriber::l - VelSubscriber::w) * msg->twist.angular.z) + 
 		msg->twist.linear.x + msg->twist.linear.y) * VelSubscriber::multFactor;
-
-		ss << "Computed rpm for front left wheel: " << speeds_msg.rpm_fl << std::endl;
-	  ss << "Computed rpm for front right wheel: " << speeds_msg.rpm_fr << std::endl;
-	  ss << "Computed rpm for rear left wheel: " << speeds_msg.rpm_rl << std::endl;
-	  ss << "Computed rpm for rear right wheel: " << speeds_msg.rpm_rr << std::endl;
-	  ROS_INFO_STREAM(ss.str());
 
 	  this->wheels_pub.publish(speeds_msg);
 	}

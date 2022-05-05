@@ -1,5 +1,3 @@
-<!-- output="screen" to see the output of a node -->
-
 <launch>
     <node pkg="rosproject1" type="wheels_sub" name="wheels_sub"/>
     <node pkg="rosproject1" type="vel_sub" name="vel_sub"/>
