@@ -2,11 +2,13 @@
     <node pkg="rosproject1" type="wheels_sub" name="wheels_sub"/>
     <node pkg="rosproject1" type="vel_sub" name="vel_sub"/>
 
-    <param name="x" value="2"/>
-    <param name="y" value="2"/>
-    <param name="theta" value="2"/>
+    <param name="x" value="0"/>
+    <param name="y" value="0"/>
+    <param name="theta" value="0"/>
 
-    <node pkg="rosproject1" type="odom_node" name="odom_node" output="screen"/>
-    <node pkg="rosproject1" type="pose_sub" name="gt_odom_tf" output="screen"/>
-    <!--<node pkg="tf2_ros" type="static_transform_broadcaster" name="world_odom" args="0 0 0 0 0 0 1 world odom"/>-->
+    <node pkg="rosproject1" type="odom_node" name="odom_node"/>
+    <!--<node pkg="rosproject1" type="pose_sub" name="gt_odom_tf" output="screen"/>-->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="world_odom" args="0 0 0 0 0 0 1 world odom"/>
+        <node pkg="rosproject1" type="calibration" name="calibration" output="screen"/>
+
 </launch>

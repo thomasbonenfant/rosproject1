@@ -17,6 +17,7 @@ class Odom {
 
             if(!n.getParam("/x", x) || !n.getParam("/y", y) || !n.getParam("/theta", theta))
             {
+                ROS_WARN("Odometry Initialization: Some parameters were not found");
                 x = 0;
                 y = 0;
                 theta = 0;
@@ -114,6 +115,17 @@ class Odom {
             odom.pose.pose.orientation.x = orientation.x();
             odom.pose.pose.orientation.y = orientation.y();
             odom.pose.pose.orientation.z = orientation.z();
+
+            odom.twist.twist.linear.x = vx_robot;
+            odom.twist.twist.linear.y = vy_robot;
+            odom.twist.twist.linear.z = 0;
+
+            odom.twist.twist.angular.x = 0;
+            odom.twist.twist.angular.y = 0;
+            odom.twist.twist.angular.z = vtheta;
+
+            for(int i = 0; i < 6; i++)
+                odom.pose.covariance[i,i] = 1;
 
             transform_stamped.header.stamp = msg->header.stamp;
             transform_stamped.header.frame_id = "odom";

@@ -132,6 +132,8 @@ add_executable(wheels_sub src/wheels_sub.cpp)
 add_executable(vel_sub src/vel_sub.cpp)
 add_executable(odom_node src/odom_node.cpp)
 add_executable(pose_sub src/pose_sub.cpp)
+add_executable(calibration src/calibration.cpp)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -145,6 +147,8 @@ add_dependencies(wheels_sub ${catkin_EXPORTED_TARGETS})
 add_dependencies(vel_sub ${catkin_EXPORTED_TARGETS})
 add_dependencies(odom_node ${catkin_EXPORTED_TARGETS})
 add_dependencies(pose_sub ${catkin_EXPORTED_TARGETS})
+add_dependencies(calibration ${catkin_EXPORTED_TARGETS})
+
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(wheels_sub ${catkin_LIBRARIES})
@@ -152,6 +156,8 @@ target_link_libraries(wheels_sub ${catkin_LIBRARIES})
 target_link_libraries(vel_sub ${catkin_LIBRARIES})
 target_link_libraries(odom_node ${catkin_LIBRARIES})
 target_link_libraries(pose_sub ${catkin_LIBRARIES})
+target_link_libraries(calibration ${catkin_LIBRARIES})
+
 
 
 

@@ -2,6 +2,7 @@
 #include "geometry_msgs/PoseStamped.h"
 #include "tf2_ros/static_transform_broadcaster.h"
 #include "geometry_msgs/TransformStamped.h"
+#include <sstream>
 
 int main(int argc, char **argv) {
 
@@ -13,7 +14,18 @@ int main(int argc, char **argv) {
 
     geometry_msgs::PoseStampedConstPtr pose = ros::topic::waitForMessage<geometry_msgs::PoseStamped>("/robot/pose");
 
-    ROS_INFO_STREAM("Received first Optitrack Pose!");
+    std::stringstream ss;
+
+
+
+    ss << std::setprecision(3);
+    ss << "Received first Optitrack Pose!" << std::endl;
+    ss << "Position" << std::endl;
+    ss << pose->pose.position << std::endl;
+    ss << "Orientation" << std::endl;
+    ss << pose->pose.orientation << std::endl;
+
+    ROS_INFO_STREAM(ss.str());
 
     transform.child_frame_id = "odom";
     transform.header.frame_id = "world";
