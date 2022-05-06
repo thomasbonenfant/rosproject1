@@ -56,7 +56,7 @@ class Odom {
         void main_loop() {
             ros::Rate loop_rate(10);
 
-            this->prev_stamp = ros::Time(0);
+            this->prev_stamp = ros::Time::now();
 
             while (ros::ok()) {
 
@@ -76,73 +76,82 @@ class Odom {
 
         void cmd_vel_sub_callback(const geometry_msgs::TwistStamped::ConstPtr& msg) {
             double deltatime = msg->header.stamp.sec - prev_stamp.sec + (msg->header.stamp.nsec - prev_stamp.nsec) / 1e9;
+
             prev_stamp = msg->header.stamp;
 
-            double vx_robot = msg->twist.linear.x;
-            double vy_robot = msg->twist.linear.y;
-            double vtheta = msg->twist.angular.z;
 
-            double midpoint_increment;
+            if(deltatime < 1) {
+                std::stringstream ss;
 
-            if(method == RK)
-                midpoint_increment = vtheta * deltatime / 2;
-            else
-                midpoint_increment = 0;
+                
+
+                double vx_robot = msg->twist.linear.x;
+                double vy_robot = msg->twist.linear.y;
+                double vtheta = msg->twist.angular.z;
+
+                double midpoint_increment;
+
+                if(method == RK)
+                    midpoint_increment = vtheta * deltatime / 2;
+                else
+                    midpoint_increment = 0;
 
 
-            double vx = vx_robot * cos(theta + midpoint_increment) -  vy_robot * sin(theta + midpoint_increment);
-            double vy = vx_robot * sin(theta + midpoint_increment) + vy_robot * cos(theta + midpoint_increment);
+                double vx = vx_robot * cos(theta + midpoint_increment) -  vy_robot * sin(theta + midpoint_increment);
+                double vy = vx_robot * sin(theta + midpoint_increment) + vy_robot * cos(theta + midpoint_increment);
 
 
-            x +=  vx* deltatime;
-            y +=  vy* deltatime;
-            theta += vtheta * deltatime;
+                x +=  vx* deltatime;
+                y +=  vy* deltatime;
+                theta += vtheta * deltatime;
 
-            nav_msgs::Odometry odom;
+                ss << "Displacement: " << sqrt(pow(vx*deltatime,2)+pow(vy*deltatime,2));
+                ROS_INFO_STREAM(ss.str());
 
-            odom.header.stamp = msg->header.stamp;
-            odom.child_frame_id = "base_link";
-            odom.header.frame_id = "odom";
+                nav_msgs::Odometry odom;
 
-            odom.pose.pose.position.x = x;
-            odom.pose.pose.position.y = y;
-            odom.pose.pose.position.z = 0;
+                odom.header.stamp = msg->header.stamp;
+                odom.child_frame_id = "base_link";
+                odom.header.frame_id = "odom";
 
-            tf2::Quaternion orientation;
-            orientation.setRPY(0, 0, theta);
+                odom.pose.pose.position.x = x;
+                odom.pose.pose.position.y = y;
+                odom.pose.pose.position.z = 0;
 
-            odom.pose.pose.orientation.w = orientation.w();
-            odom.pose.pose.orientation.x = orientation.x();
-            odom.pose.pose.orientation.y = orientation.y();
-            odom.pose.pose.orientation.z = orientation.z();
+                tf2::Quaternion orientation;
+                orientation.setRPY(0, 0, theta);
 
-            odom.twist.twist.linear.x = vx_robot;
-            odom.twist.twist.linear.y = vy_robot;
-            odom.twist.twist.linear.z = 0;
+                odom.pose.pose.orientation.w = orientation.w();
+                odom.pose.pose.orientation.x = orientation.x();
+                odom.pose.pose.orientation.y = orientation.y();
+                odom.pose.pose.orientation.z = orientation.z();
 
-            odom.twist.twist.angular.x = 0;
-            odom.twist.twist.angular.y = 0;
-            odom.twist.twist.angular.z = vtheta;
+                odom.twist.twist.linear.x = vx_robot;
+                odom.twist.twist.linear.y = vy_robot;
+                odom.twist.twist.linear.z = 0;
 
-            for(int i = 0; i < 6; i++)
-                odom.pose.covariance[i,i] = 1;
+                odom.twist.twist.angular.x = 0;
+                odom.twist.twist.angular.y = 0;
+                odom.twist.twist.angular.z = vtheta;
 
-            transform_stamped.header.stamp = msg->header.stamp;
-            transform_stamped.header.frame_id = "odom";
-            transform_stamped.child_frame_id = "base_link";
+                for(int i = 0; i < 6; i++)
+                    odom.pose.covariance[i,i] = 1;
 
-            transform_stamped.transform.translation.x = x;
-            transform_stamped.transform.translation.y = y;
-            transform_stamped.transform.translation.z = 0.0;
-            transform_stamped.transform.rotation.w = orientation.w();
-            transform_stamped.transform.rotation.x = orientation.x();
-            transform_stamped.transform.rotation.y = orientation.y();
-            transform_stamped.transform.rotation.z = orientation.z();
+                transform_stamped.header.stamp = msg->header.stamp;
+                transform_stamped.header.frame_id = "odom";
+                transform_stamped.child_frame_id = "base_link";
 
-            odom_pub.publish(odom);
-            br.sendTransform(transform_stamped);
-            
+                transform_stamped.transform.translation.x = x;
+                transform_stamped.transform.translation.y = y;
+                transform_stamped.transform.translation.z = 0.0;
+                transform_stamped.transform.rotation.w = orientation.w();
+                transform_stamped.transform.rotation.x = orientation.x();
+                transform_stamped.transform.rotation.y = orientation.y();
+                transform_stamped.transform.rotation.z = orientation.z();
 
+                odom_pub.publish(odom);
+                br.sendTransform(transform_stamped);
+            }
         }
 
     private:
