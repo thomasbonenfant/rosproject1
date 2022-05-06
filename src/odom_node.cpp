@@ -17,18 +17,10 @@ class Odom {
 
             if(!n.getParam("/x", x) || !n.getParam("/y", y) || !n.getParam("/theta", theta))
             {
-                ROS_WARN("Odometry Initialization: Some parameters were not found");
                 x = 0;
                 y = 0;
                 theta = 0;
             }
-            
-
-            /*
-            this->x = x;
-            this->y = y;
-            this->theta = theta;*/
-
 
             cmd_vel_sub = n.subscribe("cmd_vel", 1000, &Odom::cmd_vel_sub_callback, this);
             odom_pub = n.advertise<nav_msgs::Odometry>("odom", 1000);
